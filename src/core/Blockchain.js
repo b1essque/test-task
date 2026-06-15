@@ -111,11 +111,12 @@ class Blockchain {
       }
     }
 
+    const previousHash = this.getLatestBlock.hash;
     const block = new Block(
       this.chain.length,
       Date.now(),
       transactions,
-      this.getLatestBlock.hash,
+      previousHash,
       0,
       this.getDifficultyForNextBlock(),
     ).mine();
@@ -162,7 +163,7 @@ class Blockchain {
     const blockchain = new Blockchain(null, data.difficulty);
     blockchain.chain = data.chain.map((block) => Block.fromJSON(block));
     const validation = Blockchain.validateChain(blockchain.chain);
-    if (!validation.chain) {
+    if (!validation.valid) {
       throw new Error(validation.reason);
     }
     blockchain.utxoSet = validation.utxoSet;
